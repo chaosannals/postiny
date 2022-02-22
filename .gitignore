@@ -1,0 +1,5 @@
+/.*/
+/logs/
+__pycache__
+*_ui.py
+*_rc.py
