@@ -1,5 +1,5 @@
 from datetime import datetime
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QCompleter
 from loguru import logger
 from storage.habit.http import HabitRequestModel
 from utility.ttask import TTask
@@ -19,7 +19,14 @@ class HttpPanel(QWidget):
 
         hrm = HabitRequestModel.select().limit(100)
         hrs = hrm.dicts()
-        logger.info(f'hrs: {hrs}')
+        hosts = set()
+        paths = set()
+        for hr in hrs:
+            hosts.add(hr['url_host'])
+            paths.add(hr['url_path'])
+            logger.info(f'hr: {hr}')
+        self.ui.addressHostEdit.setCompleter(QCompleter(hosts))
+        self.ui.addressPathEdit.setCompleter(QCompleter(paths))
 
     def onClickAddressClearButton(self):
         '''
@@ -37,7 +44,7 @@ class HttpPanel(QWidget):
         m.url_protocol = self.ui.addressProtocolBox.currentText()
         m.url_host = self.ui.addressHostEdit.text()
         m.url_path = self.ui.addressPathEdit.text()
-
+        m.url_port = self.ui.addressPortBox.value()
         TTask.start(self.request, m)
 
     def request(self, m: HabitRequestModel):
@@ -47,6 +54,8 @@ class HttpPanel(QWidget):
 
         m.create_at = datetime.now()
         m.save()
-        logger.info(m)
+        port = '' if m.url_port is None else f':{m.url_port}'
+        url = f'{m.url_protocol}://{m.url_host}{port}/{m.url_path}'
+        logger.info('{}', url)
 
         
