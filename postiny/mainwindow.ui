@@ -50,18 +50,18 @@
   <customwidget>
    <class>HttpPanel</class>
    <extends>QWidget</extends>
-   <header>postiny.view.http.httppanel</header>
+   <header>postiny.http.httppanel</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>WebSocketPanel</class>
    <extends>QWidget</extends>
-   <header>postiny.view.ws.websocketpanel</header>
+   <header>postiny.ws.websocketpanel</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../app.qrc"/>
+  <include location="../app.qrc"/>
  </resources>
  <connections/>
 </ui>
