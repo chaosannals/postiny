@@ -26,6 +26,13 @@ class SpinBox(QSpinBox):
         self.isNullable = v
         self.update()
 
+    def setValue(self, v):
+        if v is None:
+            self.setNull(True)
+        else:
+            self.setNull(False)
+            super().setValue(v)
+
     def showEvent(self, event: QShowEvent) -> None:
         super().showEvent(event)
         self.setNull(self.isNull)
