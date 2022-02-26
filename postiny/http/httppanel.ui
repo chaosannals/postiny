@@ -34,6 +34,12 @@
     <layout class="QHBoxLayout" name="httpHeaderLayout">
      <item>
       <widget class="QComboBox" name="httpMethodBox">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <item>
         <property name="text">
          <string>GET</string>

@@ -20,7 +20,6 @@ class UrlEdit(QWidget):
         self.ui.urlNextButton.clicked.connect(self.onClickNextButton)
         self.ui.partitionNextButton.clicked.connect(self.onClickNextButton)
 
-        self.ui.urlEdit.textEdited.connect(self.onEditedUrlEdit)
         self.ui.queryAddButton.clicked.connect(self.onClickQueryAddButton)
         self.hostCompleter = QCompleter()
         self.ui.hostEdit.setCompleter(self.hostCompleter)
@@ -85,9 +84,10 @@ class UrlEdit(QWidget):
         n = self.ui.modeStack.currentIndex()
         if n == 1:
             h = self.ui.urlWidget.height()
-            self.updateUrl()
+            self.composeUrl()
             self.setMaximumHeight(h)
         else:
+            self.analyseUrl()
             self.setMaximumHeight(16777215)
 
     def addQueryRow(self):
@@ -100,12 +100,13 @@ class UrlEdit(QWidget):
         self.ui.queryTable.setCellWidget(rc, 2, db)
         return rc
 
-    def updateUrl(self):
+    def composeUrl(self):
         '''
-        
+        组合 URL 并写入合并框。
         '''
         port = '' if self.port is None else f':{self.port}'
-        url = f'{self.protocol}://{self.host}{port}/{self.path}'
+        path = '' if self.path is None or len(self.path) == 0 else f'/{self.path}'
+        url = f'{self.protocol}://{self.host}{port}{path}'
 
         # 查询参数
         query = []
@@ -126,22 +127,13 @@ class UrlEdit(QWidget):
         
         self.ui.urlEdit.setText(url)
 
-    def onClickClearButthon(self):
-        self.clear()
-
-    def onClickNextButton(self):
-        i = self.ui.modeStack.currentIndex()
-        c = self.ui.modeStack.count()
-        self.ui.modeStack.setCurrentIndex((i + 1) % c)
-        self.onModeSwitch()
-
-    def onEditedUrlEdit(self, text):
+    def analyseUrl(self):
         '''
-
+        拆解 URL 并写入表格。
         '''
 
         try:
-            pr = urlparse(text)
+            pr = urlparse(self.url)
             logger.info('{}', pr)
             for i in range(self.ui.protocolBox.count()):
                 t = self.ui.protocolBox.itemText(i)
@@ -165,6 +157,15 @@ class UrlEdit(QWidget):
             self.ui.hashEdit.setText(pr.fragment)
         except ValueError as e:
             self.clearPartition()
+
+    def onClickClearButthon(self):
+        self.clear()
+
+    def onClickNextButton(self):
+        i = self.ui.modeStack.currentIndex()
+        c = self.ui.modeStack.count()
+        self.ui.modeStack.setCurrentIndex((i + 1) % c)
+        self.onModeSwitch()
 
     def onClickQueryAddButton(self):
         '''
