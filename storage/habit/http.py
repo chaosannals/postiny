@@ -14,6 +14,7 @@ class HabitRequestModel(HabitModel):
     url_port = IntegerField(null=True)
     url_path = CharField(160)
     url_query = TextField(null=True)
+    url_hash = TextField(null=True)
     http_method = CharField(10)
     http_headers = TextField()
     http_body = TextField(null=True)

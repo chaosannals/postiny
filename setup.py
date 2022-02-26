@@ -5,7 +5,7 @@ base = 'Win32GUI' if sys.platform == 'win32' else None
 
 setup(
     name='postiny',
-    version='0.0.1',
+    version='0.0.2',
     description='yet a post client',
     executables=[
         Executable(
@@ -25,6 +25,7 @@ setup(
                 'tkinter',
             ],
             'packages': [
+                'aiohttp',
                 'peewee',
                 'pyside6',
                 'loguru',

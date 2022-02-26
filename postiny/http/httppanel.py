@@ -14,7 +14,6 @@ class HttpPanel(QWidget):
         super().__init__(parent)
         self.ui = Ui_HttpPanel()
         self.ui.setupUi(self)
-        # self.ui.addressClearButton.clicked.connect(self.onClickAddressClearButton)
         self.ui.requestButton.clicked.connect(self.onClickRequestButton)
 
         hrm = HabitRequestModel.select().limit(100)
@@ -27,8 +26,6 @@ class HttpPanel(QWidget):
             logger.info(f'hr: {hr}')
         self.ui.urlEdit.tipHosts(hosts)
         self.ui.urlEdit.tipPaths(paths)
-        # self.ui.addressHostEdit.setCompleter(QCompleter(hosts))
-        # self.ui.addressPathEdit.setCompleter(QCompleter(paths))
 
     def onClickAddressClearButton(self):
         '''
@@ -43,10 +40,11 @@ class HttpPanel(QWidget):
         '''
 
         m = HabitRequestModel()
-        m.url_protocol = self.ui.addressProtocolBox.currentText()
-        m.url_host = self.ui.addressHostEdit.text()
-        m.url_path = self.ui.addressPathEdit.text()
-        m.url_port = self.ui.addressPortBox.value()
+        d = self.ui.urlEdit.partition
+        m.url_protocol = d['protocol']
+        m.url_host = d['host']
+        m.url_port = d['port']
+        m.url_path = d['path']
         TTask.start(self.request, m)
 
     def request(self, m: HabitRequestModel):

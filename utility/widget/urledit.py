@@ -13,6 +13,8 @@ class UrlEdit(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.result_url = None
+        self.result_partition = {}
         self.ui = Ui_UrlEdit()
         self.ui.setupUi(self)
         self.ui.urlClearButton.clicked.connect(self.onClickClearButthon)
@@ -29,38 +31,37 @@ class UrlEdit(QWidget):
 
     @property
     def value(self) -> dict:
-        r = self.partition
+        r = self.partition.copy()
         r['url'] = self.url
         return r
 
     @property
     def partition(self) -> dict:
-        return {
-            'protocol': self.protocol,
-            'host': self.host,
-            'port': self.port,
-            'path': self.path,
-        }
+        return self.result_partition
 
     @property
     def url(self) -> str:
-        return self.ui.urlEdit.text()
+        return self.result_url
 
     @property
     def protocol(self) -> str:
-        return self.ui.protocolBox.currentText()
+        return self.result_partition.get('protocol', 'http')
 
     @property
-    def host(self) -> str:
-        return self.ui.hostEdit.text()
+    def host(self):
+        return self.result_partition.get('host')
 
     @property
     def port(self):
-        return self.ui.portBox.value()
+        return self.result_partition.get('port')
 
     @property
     def path(self) -> str:
-        return self.ui.pathEdit.text()
+        return self.result_partition.get('path')
+
+    @property
+    def query_string(self) -> str:
+        return self.result_partition.get('query')
 
     def tipHosts(self, hosts: Sequence[str]):
         m = QStringListModel(hosts)
@@ -79,6 +80,8 @@ class UrlEdit(QWidget):
         self.ui.portBox.clear()
         self.ui.pathEdit.clear()
         self.ui.queryTable.clear()
+        self.ui.queryTable.setRowCount(0)
+        self.ui.hashEdit.clear()
 
     def onModeSwitch(self):
         n = self.ui.modeStack.currentIndex()
@@ -104,9 +107,12 @@ class UrlEdit(QWidget):
         '''
         组合 URL 并写入合并框。
         '''
-        port = '' if self.port is None else f':{self.port}'
+
+        has_host = self.host is None or len(self.host) == 0
+        host = '' if has_host else self.host
+        port = '' if self.port is None or has_host else f':{self.port}'
         path = '' if self.path is None or len(self.path) == 0 else f'/{self.path}'
-        url = f'{self.protocol}://{self.host}{port}{path}'
+        url = f'{self.protocol}://{host}{port}{path}'
 
         # 查询参数
         query = []
@@ -117,8 +123,9 @@ class UrlEdit(QWidget):
                 vi = self.ui.queryTable.item(i, 1)
                 v = '' if vi is None else vi.text().strip()
                 query.append(f'{k}={v}')
+        query_string = '&'.join(query)
         if len(query) > 0:
-            url += '?' + '&'.join(query)
+            url = f'{url}?{query_string}'
 
         # 锚点 hash
         h = self.ui.hashEdit.text().strip()
@@ -127,13 +134,23 @@ class UrlEdit(QWidget):
         
         self.ui.urlEdit.setText(url)
 
+        self.result_url = self.ui.urlEdit.text()
+        self.result_partition = {
+            'protocol': self.ui.protocolBox.currentText(),
+            'host': self.ui.hostEdit.text(),
+            'port': self.ui.portBox.value(),
+            'path': self.ui.pathEdit.text(),
+            'query': query_string,
+            'hash': h,
+        }
+
     def analyseUrl(self):
         '''
         拆解 URL 并写入表格。
         '''
 
         try:
-            pr = urlparse(self.url)
+            pr = urlparse(self.ui.urlEdit.text())
             logger.info('{}', pr)
             for i in range(self.ui.protocolBox.count()):
                 t = self.ui.protocolBox.itemText(i)
@@ -155,6 +172,16 @@ class UrlEdit(QWidget):
                 qvi.setText(v)
                 self.ui.queryTable.setItem(r, 1, qvi)
             self.ui.hashEdit.setText(pr.fragment)
+
+            self.result_url = self.ui.urlEdit.text()
+            self.result_partition = {
+                'protocol': pr.scheme,
+                'host': self.ui.hostEdit.text(),
+                'port': self.ui.portBox.value(),
+                'path': self.ui.pathEdit.text(),
+                'query': pr.query,
+                'hash': self.ui.hashEdit.text(),
+            }
         except ValueError as e:
             self.clearPartition()
 
