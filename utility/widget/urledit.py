@@ -79,7 +79,7 @@ class UrlEdit(QWidget):
         self.ui.hostEdit.clear()
         self.ui.portBox.clear()
         self.ui.pathEdit.clear()
-        self.ui.queryTable.clear()
+        self.ui.queryTable.clearContents()
         self.ui.queryTable.setRowCount(0)
         self.ui.hashEdit.clear()
 
@@ -100,7 +100,7 @@ class UrlEdit(QWidget):
         db.setText('删除')
         db.setStyleSheet('QPushButton { color: #f00; background: #fff; margin: 5px; border: 1px solid #f00 }')
         db.clicked.connect(lambda: self.onClickQueryTableItemDeleteButton(db))
-        self.ui.queryTable.setCellWidget(rc, 2, db)
+        self.ui.queryTable.setCellWidget(rc, 3, db)
         return rc
 
     def composeUrl(self):
@@ -160,7 +160,7 @@ class UrlEdit(QWidget):
             self.ui.portBox.setValue(pr.port)
             self.ui.pathEdit.setText(pr.path.strip('/'))
             # 查询参数
-            self.ui.queryTable.clear()
+            self.ui.queryTable.clearContents()
             self.ui.queryTable.setRowCount(0)
             for q in pr.query.split('&'):
                 k, v = q.split('=', 2)

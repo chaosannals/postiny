@@ -203,6 +203,11 @@
          </column>
          <column>
           <property name="text">
+           <string>备注</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
            <string>操作</string>
           </property>
          </column>

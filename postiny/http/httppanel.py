@@ -16,16 +16,16 @@ class HttpPanel(QWidget):
         self.ui.setupUi(self)
         self.ui.requestButton.clicked.connect(self.onClickRequestButton)
 
-        hrm = HabitRequestModel.select().limit(100)
-        hrs = hrm.dicts()
-        hosts = set()
-        paths = set()
-        for hr in hrs:
-            hosts.add(hr['url_host'])
-            paths.add(hr['url_path'])
-            logger.info(f'hr: {hr}')
-        self.ui.urlEdit.tipHosts(hosts)
-        self.ui.urlEdit.tipPaths(paths)
+        # hrm = HabitRequestModel.select().limit(100)
+        # hrs = hrm.dicts()
+        # hosts = set()
+        # paths = set()
+        # for hr in hrs:
+        #     hosts.add(hr['url_host'])
+        #     paths.add(hr['url_path'])
+        #     logger.info(f'hr: {hr}')
+        # self.ui.urlEdit.tipHosts(hosts)
+        # self.ui.urlEdit.tipPaths(paths)
 
     def onClickAddressClearButton(self):
         '''
@@ -40,7 +40,7 @@ class HttpPanel(QWidget):
         '''
 
         m = HabitRequestModel()
-        d = self.ui.urlEdit.partition
+        d = self.ui.requestForm.urlInfo
         m.url_protocol = d['protocol']
         m.url_host = d['host']
         m.url_port = d['port']

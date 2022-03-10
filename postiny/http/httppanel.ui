@@ -15,111 +15,20 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="UrlEdit" name="urlEdit" native="true">
+    <widget class="HttpRequestForm" name="requestForm" native="true">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>30</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="httpHeaderLayout">
-     <item>
-      <widget class="QComboBox" name="httpMethodBox">
-       <property name="maximumSize">
-        <size>
-         <width>80</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <item>
-        <property name="text">
-         <string>GET</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>POST</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Content-Type:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBox">
-       <item>
-        <property name="text">
-         <string>application/json</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>application/x-www-form-urlencoded </string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>multipart/form-data; boundary=</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="httpHeaderAddButton">
-       <property name="maximumSize">
-        <size>
-         <width>30</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>+</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QTableWidget" name="httpHeadersTable">
-     <column>
-      <property name="text">
-       <string>键</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>值</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>操作</string>
-      </property>
-     </column>
     </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="requestLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -132,6 +41,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveButton">
+       <property name="text">
+        <string>保存</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="clearButton">
@@ -153,9 +69,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>UrlEdit</class>
+   <class>HttpRequestForm</class>
    <extends>QWidget</extends>
-   <header>utility.widget.urledit</header>
+   <header>postiny.http.httprequestform</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
