@@ -1,3 +1,4 @@
+from random import randbytes
 from loguru import logger
 from PySide6.QtWidgets import QWidget, QPushButton
 from .httprequestform_ui import Ui_HttpRequestForm
@@ -5,7 +6,7 @@ from storage.habit.http import HabitRequestModel
 
 class HttpRequestForm(QWidget):
     '''
-    
+    HTTP 请求表单
     '''
 
     def __init__(self, parent=None):
@@ -27,11 +28,27 @@ class HttpRequestForm(QWidget):
 
     @property
     def urlInfo(self):
-        return self.ui.urlEdit.value
+        r = self.ui.urlEdit.value.copy()
+        r['method'] = self.ui.methodBox.currentText()
+        r['headers'] = self.headers.copy()
+        return r
+
+    @property
+    def headers(self):
+        '''
+        
+        '''
+        ct = self.ui.contentTypeBox.currentText()
+        if ct.startswith('multipart/form-data'):
+            b = randbytes(32).hex()
+            ct += f'; boundary={b}'
+
+        r = {'Content-Type': ct }
+        return r
 
     def addHeaderRow(self):
         '''
-        
+        添加单条报首项
         '''
 
         rc = self.ui.headersTable.rowCount()
@@ -44,10 +61,17 @@ class HttpRequestForm(QWidget):
         return rc
 
     def onClickHeaderAddButton(self):
-
+        '''
+        点击添加报首项按钮事件处理
+        '''
+        
         self.addHeaderRow()
 
     def onClickHeadersTableItemDeleteButton(self, db):
+        '''
+        点击删除报首项按钮事件处理
+        '''
+        
         for i in range(self.ui.headersTable.rowCount()):
             b = self.ui.headersTable.cellWidget(i, 2)
             if b == db:

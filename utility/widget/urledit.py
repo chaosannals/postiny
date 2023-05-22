@@ -27,7 +27,7 @@ class UrlEdit(QWidget):
         self.ui.hostEdit.setCompleter(self.hostCompleter)
         self.pathCompleter = QCompleter()
         self.ui.pathEdit.setCompleter(self.pathCompleter)
-        self.onModeSwitch()
+        self.toggleMode()
 
     @property
     def value(self) -> dict:
@@ -72,10 +72,18 @@ class UrlEdit(QWidget):
         self.pathCompleter.setModel(m)
 
     def clear(self):
+        '''
+        清理内容
+        '''
+        
         self.ui.urlEdit.clear()
         self.clearPartition()
 
     def clearPartition(self):
+        '''
+        清除分治项内容
+        '''
+        
         self.ui.hostEdit.clear()
         self.ui.portBox.clear()
         self.ui.pathEdit.clear()
@@ -83,8 +91,22 @@ class UrlEdit(QWidget):
         self.ui.queryTable.setRowCount(0)
         self.ui.hashEdit.clear()
 
-    def onModeSwitch(self):
-        n = self.ui.modeStack.currentIndex()
+    def toggleMode(self):
+        '''
+        
+        '''
+
+        i = self.ui.modeStack.currentIndex()
+        c = self.ui.modeStack.count()
+        n = (i + 1) % c
+        self.ui.modeStack.setCurrentIndex(n)
+        self.switchMode(n)
+
+    def switchMode(self, n):
+        '''
+        切换到指定模式
+        '''
+        
         if n == 1:
             h = self.ui.urlWidget.height()
             self.composeUrl()
@@ -94,6 +116,10 @@ class UrlEdit(QWidget):
             self.setMaximumHeight(16777215)
 
     def addQueryRow(self):
+        '''
+        添加请求参数列。
+        '''
+        
         rc = self.ui.queryTable.rowCount()
         self.ui.queryTable.insertRow(rc)
         db = QPushButton()
@@ -186,22 +212,31 @@ class UrlEdit(QWidget):
             self.clearPartition()
 
     def onClickClearButthon(self):
+        '''
+        点击清理按钮事件处理
+        '''
+        
         self.clear()
 
     def onClickNextButton(self):
-        i = self.ui.modeStack.currentIndex()
-        c = self.ui.modeStack.count()
-        self.ui.modeStack.setCurrentIndex((i + 1) % c)
-        self.onModeSwitch()
+        '''
+        点击切换模式按钮事件处理
+        '''
+        
+        self.toggleMode()
 
     def onClickQueryAddButton(self):
         '''
-        
+        点击请求参数项添加事件处理
         '''
 
         self.addQueryRow()
 
     def onClickQueryTableItemDeleteButton(self, db):
+        '''
+        点击请求参数项删除事件处理
+        '''
+        
         for i in range(self.ui.queryTable.rowCount()):
             b = self.ui.queryTable.cellWidget(i, 2)
             if b == db:

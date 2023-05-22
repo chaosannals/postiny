@@ -79,7 +79,7 @@
        </item>
        <item>
         <property name="text">
-         <string>multipart/form-data; boundary=</string>
+         <string>multipart/form-data</string>
         </property>
        </item>
       </widget>
